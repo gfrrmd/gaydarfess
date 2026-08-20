@@ -5,23 +5,23 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>GaydarFess</title>
   <link rel="stylesheet" href="/css/style.css">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
-<body>
-<nav class="navbar">
-  <div class="nav-inner">
-    <a href="/" class="nav-logo">@ GaydarFess</a>
-    <div class="nav-actions">
+<body class="<%= pageClass || '' %>">
+<nav class="topbar">
+  <div class="topbar-inner">
+    <a href="/" class="brand">GaydarFess</a>
+    <div class="topbar-actions">
       <% if (currentUser) { %>
-        <a href="/profile/<%= currentUser.username %>" class="nav-avatar">
-          <img src="<%= currentUser.avatar || '/img/default-avatar.png' %>" alt="avatar">
-        </a>
-        <a href="/auth/logout" class="btn-ghost">Keluar</a>
+        <a href="/profile/<%= currentUser.username %>" class="topbar-profile-link">Profile</a>
+        <a href="/auth/logout" class="btn btn-muted">Keluar</a>
       <% } else { %>
-        <a href="/auth/login" class="btn-ghost">Masuk</a>
-        <a href="/auth/register" class="btn-primary">Daftar</a>
+        <a href="/auth/login" class="btn btn-muted">Masuk</a>
+        <a href="/auth/register" class="btn btn-solid">Daftar</a>
       <% } %>
     </div>
   </div>
 </nav>
-<main class="container">
+<main class="app-shell">

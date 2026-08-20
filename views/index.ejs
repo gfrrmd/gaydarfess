@@ -1,64 +1,66 @@
-<%- include('partials/header') %>
+<%- include('partials/header', { pageClass: 'page-home' }) %>
 
-<div class="feed-wrapper">
+<section class="composer-card surface">
   <% if (currentUser) { %>
-  <div class="new-thread-box">
-    <img src="<%= currentUser.avatar || '/img/default-avatar.png' %>" class="avatar-sm" alt="avatar">
-    <form action="/threads" method="POST" enctype="multipart/form-data" class="thread-form">
-      <textarea name="content" placeholder="What's new?" maxlength="500" rows="2"></textarea>
-      <div class="thread-form-actions">
-        <label class="attach-btn" title="Lampirkan gambar">
-          📷
-          <input type="file" name="media" accept="image/*,image/gif" hidden>
+  <div class="composer-row">
+    <img src="<%= currentUser.avatar || '/img/default-avatar.png' %>" class="avatar avatar-md" alt="avatar">
+    <form action="/threads" method="POST" enctype="multipart/form-data" class="composer-form">
+      <textarea name="content" placeholder="What's new?" maxlength="500" rows="3" required></textarea>
+      <div class="composer-actions">
+        <label class="file-trigger">Add image
+          <input type="file" name="media" accept="image/*" hidden>
         </label>
-        <button type="submit" class="btn-primary">Post</button>
+        <button type="submit" class="btn btn-solid">Post</button>
       </div>
     </form>
   </div>
+  <% } else { %>
+  <div class="empty-state surface-soft">
+    <h2>Welcome to GaydarFess</h2>
+    <p>Masuk untuk membuat utas, membalas, dan membangun profilmu.</p>
+    <div class="auth-inline">
+      <a href="/auth/login" class="btn btn-muted">Masuk</a>
+      <a href="/auth/register" class="btn btn-solid">Daftar</a>
+    </div>
+  </div>
   <% } %>
+</section>
 
-  <div class="threads-feed">
-    <% threads.forEach(t => { %>
-    <div class="thread-card" id="thread-<%= t._id %>">
-      <a href="/profile/<%= t.author.username %>">
-        <img src="<%= t.author.avatar || '/img/default-avatar.png' %>" class="avatar-sm" alt="avatar">
-      </a>
-      <div class="thread-body">
-        <div class="thread-header">
-          <a href="/profile/<%= t.author.username %>" class="thread-author">
-            <%= t.author.displayName || t.author.username %>
-          </a>
-          <span class="thread-username">@<%= t.author.username %></span>
-          <span class="thread-time"><%= new Date(t.createdAt).toLocaleDateString('id-ID', { day:'2-digit', month:'short' }) %></span>
+<section class="thread-list">
+  <% threads.forEach(t => { %>
+  <article class="thread-card surface hoverable">
+    <a href="/profile/<%= t.author.username %>" class="thread-avatar-link">
+      <img src="<%= t.author.avatar || '/img/default-avatar.png' %>" class="avatar avatar-md" alt="avatar">
+    </a>
+    <div class="thread-main">
+      <div class="thread-topbar">
+        <div>
+          <a href="/profile/<%= t.author.username %>" class="display-name"><%= t.author.displayName || t.author.username %></a>
+          <span class="username">@<%= t.author.username %></span>
         </div>
-        <p class="thread-content"><%= t.content %></p>
+        <span class="thread-date"><%= new Date(t.createdAt).toLocaleDateString('id-ID', { day:'2-digit', month:'short' }) %></span>
+      </div>
+
+      <a href="/threads/<%= t._id %>" class="thread-link-block">
+        <p class="thread-text"><%= t.content %></p>
         <% if (t.media) { %>
-          <img src="<%= t.media %>" class="thread-media" alt="media">
+          <img src="<%= t.media %>" class="thread-image" alt="media">
         <% } %>
-        <div class="thread-actions">
-          <button class="action-btn like-btn" data-id="<%= t._id %>" data-liked="<%= currentUser && t.likes.includes(currentUser.id) ? 'true' : 'false' %>">
-            <span class="like-icon"><%= currentUser && t.likes.map(String).includes(String(currentUser.id)) ? '❤️' : '🤍' %></span>
-            <span class="like-count"><%= t.likes.length %></span>
-          </button>
-          <button class="action-btn" onclick="toggleReply('<%= t._id %>')">💬 <span><%= t.replies.length %></span></button>
-        </div>
-        <div class="reply-box" id="reply-<%= t._id %>" style="display:none">
-          <% if (currentUser) { %>
-          <form action="/threads/<%= t._id %>/reply" method="POST" class="reply-form">
-            <input type="text" name="content" placeholder="Balas..." required>
-            <button type="submit" class="btn-primary">Kirim</button>
-          </form>
-          <% } %>
-          <% t.replies.slice().reverse().forEach(r => { %>
-          <div class="reply-item">
-            <strong>@<%= r.author ? r.author.username : 'user' %></strong>: <%= r.content %>
-          </div>
-          <% }) %>
-        </div>
+      </a>
+
+      <div class="thread-metrics">
+        <button class="icon-btn like-btn" data-id="<%= t._id %>" data-liked="<%= currentUser && t.likes.map(String).includes(String(currentUser.id)) ? 'true' : 'false' %>">
+          <span class="icon-stroke"><%= currentUser && t.likes.map(String).includes(String(currentUser.id)) ? 'Liked' : 'Like' %></span>
+          <span class="metric"><%= t.likes.length %></span>
+        </button>
+        <a href="/threads/<%= t._id %>" class="icon-btn">
+          <span class="icon-stroke">Reply</span>
+          <span class="metric"><%= t.replies.length %></span>
+        </a>
       </div>
     </div>
-    <% }) %>
-  </div>
-</div>
+  </article>
+  <% }) %>
+</section>
 
 <%- include('partials/footer') %>

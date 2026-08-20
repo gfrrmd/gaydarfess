@@ -6,7 +6,7 @@ router.get('/', async (req, res) => {
   try {
     const threads = await Thread.find()
       .populate('author', 'username displayName avatar')
-      .populate('replies.author', 'username avatar')
+      .populate('replies.author', 'username avatar displayName')
       .sort({ createdAt: -1 })
       .limit(50);
     res.render('index', { threads });

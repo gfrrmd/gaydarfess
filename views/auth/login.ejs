@@ -1,14 +1,17 @@
-<%- include('../partials/header') %>
+<%- include('../partials/header', { pageClass: 'page-auth' }) %>
 
-<div class="auth-wrapper">
-  <h2>Masuk ke GaydarFess</h2>
+<section class="auth-shell surface auth-box">
+  <div class="auth-head">
+    <h1>Masuk</h1>
+    <p>Akses akun GaydarFess kamu.</p>
+  </div>
   <% if (error) { %><p class="error-msg"><%= error %></p><% } %>
   <form action="/auth/login" method="POST" class="auth-form">
     <input type="text" name="username" placeholder="Username" required>
     <input type="password" name="password" placeholder="Password" required>
-    <button type="submit" class="btn-primary full">Masuk</button>
+    <button type="submit" class="btn btn-solid full-width">Masuk</button>
   </form>
   <p class="auth-switch">Belum punya akun? <a href="/auth/register">Daftar</a></p>
-</div>
+</section>
 
 <%- include('../partials/footer') %>

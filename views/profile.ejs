@@ -1,65 +1,95 @@
-<%- include('partials/header') %>
+<%- include('partials/header', { pageClass: 'page-profile' }) %>
 
-<div class="profile-wrapper">
-  <div class="profile-header">
-    <div class="profile-info">
-      <div>
-        <h2 class="profile-display"><%= profileUser.displayName || profileUser.username %></h2>
-        <p class="profile-username">@<%= profileUser.username %></p>
-        <p class="profile-bio"><%= profileUser.bio %></p>
-        <p class="profile-followers"><%= profileUser.followers.length %> followers</p>
-      </div>
-      <img src="<%= profileUser.avatar || '/img/default-avatar.png' %>" class="avatar-lg" alt="avatar">
+<section class="profile-shell surface">
+  <div class="profile-hero">
+    <div class="profile-copy">
+      <h1><%= profileUser.displayName || profileUser.username %></h1>
+      <p class="profile-handle">@<%= profileUser.username %></p>
+      <% if (profileUser.bio) { %><p class="profile-bio"><%= profileUser.bio %></p><% } %>
+      <p class="profile-meta"><%= profileUser.followers.length %> followers</p>
     </div>
-    <% if (currentUser && currentUser.username === profileUser.username) { %>
-    <div class="profile-btns">
-      <button onclick="document.getElementById('edit-modal').style.display='flex'" class="btn-outline">Edit profile</button>
-      <button class="btn-outline">Share profile</button>
-    </div>
+    <img src="<%= profileUser.avatar || '/img/default-avatar.png' %>" class="avatar avatar-xl" alt="avatar">
+  </div>
+
+  <% if (currentUser && currentUser.username === profileUser.username) { %>
+  <div class="profile-actions">
+    <button onclick="openModal('edit-modal')" class="btn btn-muted">Edit profile</button>
+    <button onclick="copyProfileLink()" class="btn btn-muted">Share profile</button>
+  </div>
+  <% } %>
+</section>
+
+<section class="tab-shell surface">
+  <div class="tabs" data-tab-root>
+    <button class="tab-btn active" data-tab-target="threads-panel">Threads</button>
+    <button class="tab-btn" data-tab-target="replies-panel">Replies</button>
+  </div>
+
+  <div id="threads-panel" class="tab-panel active">
+    <% if (threads.length === 0) { %>
+      <div class="empty-state surface-soft small-empty"><p>Belum ada utas.</p></div>
     <% } %>
-  </div>
-
-  <div class="profile-tabs">
-    <span class="tab active">Threads</span>
-    <span class="tab">Replies</span>
-    <span class="tab">Media</span>
-    <span class="tab">Reposts</span>
-  </div>
-
-  <div class="threads-feed">
     <% threads.forEach(t => { %>
-    <div class="thread-card">
-      <img src="<%= profileUser.avatar || '/img/default-avatar.png' %>" class="avatar-sm" alt="avatar">
-      <div class="thread-body">
-        <div class="thread-header">
-          <span class="thread-author"><%= profileUser.displayName || profileUser.username %></span>
-          <span class="thread-time"><%= new Date(t.createdAt).toLocaleDateString('id-ID', { day:'2-digit', month:'short', year:'2-digit'}) %></span>
+      <article class="thread-card surface-soft compact-card">
+        <img src="<%= profileUser.avatar || '/img/default-avatar.png' %>" class="avatar avatar-md" alt="avatar">
+        <div class="thread-main">
+          <div class="thread-topbar">
+            <div>
+              <span class="display-name"><%= profileUser.displayName || profileUser.username %></span>
+              <span class="username">@<%= profileUser.username %></span>
+            </div>
+            <span class="thread-date"><%= new Date(t.createdAt).toLocaleDateString('id-ID', { day:'2-digit', month:'short', year:'2-digit'}) %></span>
+          </div>
+          <a href="/threads/<%= t._id %>" class="thread-link-block">
+            <p class="thread-text"><%= t.content %></p>
+            <% if (t.media) { %><img src="<%= t.media %>" class="thread-image" alt="media"><% } %>
+          </a>
         </div>
-        <p class="thread-content"><%= t.content %></p>
-        <% if (t.media) { %><img src="<%= t.media %>" class="thread-media" alt=""><% } %>
-      </div>
-    </div>
+      </article>
     <% }) %>
   </div>
-</div>
 
-<!-- Edit Modal -->
+  <div id="replies-panel" class="tab-panel">
+    <% if (replies.length === 0) { %>
+      <div class="empty-state surface-soft small-empty"><p>Belum ada reply.</p></div>
+    <% } %>
+    <% replies.forEach(item => { %>
+      <% item.replies.filter(r => String(r.author?._id || r.author) === String(profileUser._id)).forEach(r => { %>
+        <article class="reply-card surface-soft profile-reply-card">
+          <img src="<%= profileUser.avatar || '/img/default-avatar.png' %>" class="avatar avatar-sm" alt="avatar">
+          <div class="reply-content">
+            <div class="reply-topbar">
+              <strong><%= profileUser.displayName || profileUser.username %></strong>
+              <span>@<%= profileUser.username %></span>
+            </div>
+            <p><%= r.content %></p>
+            <a href="/threads/<%= item._id %>" class="inline-link">Lihat utas</a>
+          </div>
+        </article>
+      <% }) %>
+    <% }) %>
+  </div>
+</section>
+
 <div id="edit-modal" class="modal-overlay" style="display:none">
-  <div class="modal">
-    <h3>Edit Profile</h3>
-    <form action="/profile/edit" method="POST" enctype="multipart/form-data">
+  <div class="modal surface">
+    <div class="modal-head">
+      <h3>Edit Profile</h3>
+      <button type="button" class="modal-close" onclick="closeModal('edit-modal')">Close</button>
+    </div>
+    <form action="/profile/edit" method="POST" enctype="multipart/form-data" class="modal-form">
       <label>Display Name
         <input type="text" name="displayName" value="<%= profileUser.displayName %>">
       </label>
       <label>Bio
-        <textarea name="bio"><%= profileUser.bio %></textarea>
+        <textarea name="bio" rows="4"><%= profileUser.bio %></textarea>
       </label>
       <label>Avatar
         <input type="file" name="avatar" accept="image/*">
       </label>
       <div class="modal-actions">
-        <button type="button" onclick="document.getElementById('edit-modal').style.display='none'" class="btn-ghost">Batal</button>
-        <button type="submit" class="btn-primary">Simpan</button>
+        <button type="button" class="btn btn-muted" onclick="closeModal('edit-modal')">Cancel</button>
+        <button type="submit" class="btn btn-solid">Save</button>
       </div>
     </form>
   </div>

@@ -1,0 +1,71 @@
+<%- include('partials/header', { pageClass: 'page-thread' }) %>
+
+<article class="thread-detail surface">
+  <div class="detail-head">
+    <a href="/profile/<%= thread.author.username %>" class="detail-author-link">
+      <img src="<%= thread.author.avatar || '/img/default-avatar.png' %>" class="avatar avatar-lg" alt="avatar">
+    </a>
+    <div class="detail-author-meta">
+      <h1><%= thread.author.displayName || thread.author.username %></h1>
+      <p>@<%= thread.author.username %></p>
+      <% if (thread.author.bio) { %><span><%= thread.author.bio %></span><% } %>
+    </div>
+  </div>
+
+  <div class="detail-content">
+    <p class="detail-text"><%= thread.content %></p>
+    <% if (thread.media) { %>
+      <img src="<%= thread.media %>" class="detail-image" alt="media">
+    <% } %>
+  </div>
+
+  <div class="detail-toolbar">
+    <button class="icon-btn like-btn" data-id="<%= thread._id %>" data-liked="<%= currentUser && thread.likes.map(String).includes(String(currentUser.id)) ? 'true' : 'false' %>">
+      <span class="icon-stroke"><%= currentUser && thread.likes.map(String).includes(String(currentUser.id)) ? 'Liked' : 'Like' %></span>
+      <span class="metric"><%= thread.likes.length %></span>
+    </button>
+    <span class="icon-btn static-btn"><span class="icon-stroke">Replies</span><span class="metric"><%= thread.replies.length %></span></span>
+  </div>
+</article>
+
+<section class="reply-section surface">
+  <div class="section-title-row">
+    <h2>Replies</h2>
+    <span><%= thread.replies.length %> total</span>
+  </div>
+
+  <% if (currentUser) { %>
+  <form action="/threads/<%= thread._id %>/reply" method="POST" class="reply-compose">
+    <img src="<%= currentUser.avatar || '/img/default-avatar.png' %>" class="avatar avatar-sm" alt="avatar">
+    <div class="reply-compose-body">
+      <textarea name="content" placeholder="Write a reply" rows="3" required></textarea>
+      <div class="reply-compose-actions">
+        <button type="submit" class="btn btn-solid">Reply</button>
+      </div>
+    </div>
+  </form>
+  <% } %>
+
+  <div class="reply-list">
+    <% if (thread.replies.length === 0) { %>
+      <div class="empty-state surface-soft small-empty">
+        <p>Belum ada balasan.</p>
+      </div>
+    <% } %>
+
+    <% thread.replies.slice().reverse().forEach(r => { %>
+      <div class="reply-card surface-soft">
+        <img src="<%= r.author && r.author.avatar ? r.author.avatar : '/img/default-avatar.png' %>" class="avatar avatar-sm" alt="avatar">
+        <div class="reply-content">
+          <div class="reply-topbar">
+            <strong><%= r.author ? (r.author.displayName || r.author.username) : 'User' %></strong>
+            <span>@<%= r.author ? r.author.username : 'user' %></span>
+          </div>
+          <p><%= r.content %></p>
+        </div>
+      </div>
+    <% }) %>
+  </div>
+</section>
+
+<%- include('partials/footer') %>

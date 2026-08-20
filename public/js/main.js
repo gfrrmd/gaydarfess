@@ -1,27 +1,42 @@
-// Like toggle
-document.querySelectorAll('.like-btn').forEach(btn => {
-  btn.addEventListener('click', async () => {
+const likeButtons = document.querySelectorAll('.like-btn');
+
+likeButtons.forEach(btn => {
+  btn.addEventListener('click', async (event) => {
+    event.preventDefault();
     const id = btn.dataset.id;
     const res = await fetch(`/threads/${id}/like`, { method: 'POST' });
-    if (res.ok) {
-      const data = await res.json();
-      btn.querySelector('.like-count').textContent = data.likes;
-      btn.querySelector('.like-icon').textContent = data.liked ? '❤️' : '🤍';
-      btn.dataset.liked = data.liked;
-    }
+    if (!res.ok) return;
+    const data = await res.json();
+    btn.dataset.liked = String(data.liked);
+    btn.querySelector('.icon-stroke').textContent = data.liked ? 'Liked' : 'Like';
+    btn.querySelector('.metric').textContent = data.likes;
   });
 });
 
-// Toggle reply box
-function toggleReply(id) {
-  const box = document.getElementById('reply-' + id);
-  box.style.display = box.style.display === 'none' ? 'block' : 'none';
+function openModal(id) {
+  const modal = document.getElementById(id);
+  if (modal) modal.style.display = 'flex';
 }
 
-// Profile tab (cosmetic)
-document.querySelectorAll('.tab').forEach(tab => {
-  tab.addEventListener('click', () => {
-    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-    tab.classList.add('active');
+function closeModal(id) {
+  const modal = document.getElementById(id);
+  if (modal) modal.style.display = 'none';
+}
+
+function copyProfileLink() {
+  navigator.clipboard.writeText(window.location.href);
+}
+
+const tabRoots = document.querySelectorAll('[data-tab-root]');
+tabRoots.forEach(root => {
+  const buttons = root.querySelectorAll('.tab-btn');
+  buttons.forEach(button => {
+    button.addEventListener('click', () => {
+      const targetId = button.dataset.tabTarget;
+      document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+      document.querySelectorAll('.tab-panel').forEach(panel => panel.classList.remove('active'));
+      button.classList.add('active');
+      document.getElementById(targetId)?.classList.add('active');
+    });
   });
 });
