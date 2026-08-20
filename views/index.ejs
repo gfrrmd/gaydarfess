@@ -1,53 +1,49 @@
-<%- include('partials/header', { pageClass: 'page-home' }) %>
+<%- include('partials/header', { pageClass: '' }) %>
 
-<section class="composer-card surface">
-  <% if (currentUser) { %>
+<% if (currentUser) { %>
+<div class="composer-card">
   <div class="composer-row">
-    <img src="<%= currentUser.avatar || '/img/default-avatar.png' %>" class="avatar avatar-md" alt="avatar">
+    <img src="<%= currentUser.avatar || '/img/default-avatar.png' %>" class="avatar avatar-md" alt="">
     <form action="/threads" method="POST" enctype="multipart/form-data" class="composer-form">
-      <textarea name="content" placeholder="What's new?" maxlength="500" rows="3" required></textarea>
+      <textarea name="content" placeholder="What's new?" maxlength="500" required></textarea>
       <div class="composer-actions">
-        <label class="file-trigger">Add image
+        <label class="file-trigger">Lampirkan gambar
           <input type="file" name="media" accept="image/*" hidden>
         </label>
         <button type="submit" class="btn btn-solid">Post</button>
       </div>
     </form>
   </div>
-  <% } else { %>
-  <div class="empty-state surface-soft">
-    <h2>Welcome to GaydarFess</h2>
-    <p>Masuk untuk membuat utas, membalas, dan membangun profilmu.</p>
-    <div class="auth-inline">
-      <a href="/auth/login" class="btn btn-muted">Masuk</a>
-      <a href="/auth/register" class="btn btn-solid">Daftar</a>
-    </div>
+</div>
+<% } else { %>
+<div class="empty-state surface">
+  <h2>GaydarFess</h2>
+  <p>Masuk untuk membuat dan membalas utas.</p>
+  <div class="auth-inline">
+    <a href="/auth/login" class="btn btn-muted">Masuk</a>
+    <a href="/auth/register" class="btn btn-solid">Daftar</a>
   </div>
-  <% } %>
-</section>
+</div>
+<% } %>
 
-<section class="thread-list">
+<div class="thread-list">
   <% threads.forEach(t => { %>
-  <article class="thread-card surface hoverable">
-    <a href="/profile/<%= t.author.username %>" class="thread-avatar-link">
-      <img src="<%= t.author.avatar || '/img/default-avatar.png' %>" class="avatar avatar-md" alt="avatar">
+  <article class="thread-card hoverable">
+    <a href="/profile/<%= t.author.username %>">
+      <img src="<%= t.author.avatar || '/img/default-avatar.png' %>" class="avatar avatar-md" alt="">
     </a>
     <div class="thread-main">
       <div class="thread-topbar">
-        <div>
+        <div class="thread-meta">
           <a href="/profile/<%= t.author.username %>" class="display-name"><%= t.author.displayName || t.author.username %></a>
           <span class="username">@<%= t.author.username %></span>
+          <span class="thread-date"><%= new Date(t.createdAt).toLocaleDateString('id-ID', { day:'2-digit', month:'short' }) %></span>
         </div>
-        <span class="thread-date"><%= new Date(t.createdAt).toLocaleDateString('id-ID', { day:'2-digit', month:'short' }) %></span>
       </div>
-
       <a href="/threads/<%= t._id %>" class="thread-link-block">
         <p class="thread-text"><%= t.content %></p>
-        <% if (t.media) { %>
-          <img src="<%= t.media %>" class="thread-image" alt="media">
-        <% } %>
+        <% if (t.media) { %><img src="<%= t.media %>" class="thread-image" alt=""><% } %>
       </a>
-
       <div class="thread-metrics">
         <button class="icon-btn like-btn" data-id="<%= t._id %>" data-liked="<%= currentUser && t.likes.map(String).includes(String(currentUser.id)) ? 'true' : 'false' %>">
           <span class="icon-stroke"><%= currentUser && t.likes.map(String).includes(String(currentUser.id)) ? 'Liked' : 'Like' %></span>
@@ -57,10 +53,15 @@
           <span class="icon-stroke">Reply</span>
           <span class="metric"><%= t.replies.length %></span>
         </a>
+        <% if (currentUser && String(currentUser.id) === String(t.author._id)) { %>
+        <form action="/threads/<%= t._id %>?_method=DELETE" method="POST" class="inline-form" onsubmit="return confirm('Hapus postingan ini?')">
+          <button type="submit" class="icon-btn delete-btn">Hapus</button>
+        </form>
+        <% } %>
       </div>
     </div>
   </article>
   <% }) %>
-</section>
+</div>
 
 <%- include('partials/footer') %>

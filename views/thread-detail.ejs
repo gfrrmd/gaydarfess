@@ -1,9 +1,9 @@
-<%- include('partials/header', { pageClass: 'page-thread' }) %>
+<%- include('partials/header', { pageClass: '' }) %>
 
 <article class="thread-detail surface">
   <div class="detail-head">
-    <a href="/profile/<%= thread.author.username %>" class="detail-author-link">
-      <img src="<%= thread.author.avatar || '/img/default-avatar.png' %>" class="avatar avatar-lg" alt="avatar">
+    <a href="/profile/<%= thread.author.username %>">
+      <img src="<%= thread.author.avatar || '/img/default-avatar.png' %>" class="avatar avatar-md" alt="">
     </a>
     <div class="detail-author-meta">
       <h1><%= thread.author.displayName || thread.author.username %></h1>
@@ -14,9 +14,7 @@
 
   <div class="detail-content">
     <p class="detail-text"><%= thread.content %></p>
-    <% if (thread.media) { %>
-      <img src="<%= thread.media %>" class="detail-image" alt="media">
-    <% } %>
+    <% if (thread.media) { %><img src="<%= thread.media %>" class="detail-image" alt=""><% } %>
   </div>
 
   <div class="detail-toolbar">
@@ -25,10 +23,15 @@
       <span class="metric"><%= thread.likes.length %></span>
     </button>
     <span class="icon-btn static-btn"><span class="icon-stroke">Replies</span><span class="metric"><%= thread.replies.length %></span></span>
+    <% if (currentUser && String(currentUser.id) === String(thread.author._id)) { %>
+    <form action="/threads/<%= thread._id %>?_method=DELETE" method="POST" class="inline-form" onsubmit="return confirm('Hapus postingan ini?')">
+      <button type="submit" class="icon-btn delete-btn">Hapus</button>
+    </form>
+    <% } %>
   </div>
 </article>
 
-<section class="reply-section surface">
+<section class="reply-section">
   <div class="section-title-row">
     <h2>Replies</h2>
     <span><%= thread.replies.length %> total</span>
@@ -36,11 +39,11 @@
 
   <% if (currentUser) { %>
   <form action="/threads/<%= thread._id %>/reply" method="POST" class="reply-compose">
-    <img src="<%= currentUser.avatar || '/img/default-avatar.png' %>" class="avatar avatar-sm" alt="avatar">
+    <img src="<%= currentUser.avatar || '/img/default-avatar.png' %>" class="avatar avatar-sm" alt="">
     <div class="reply-compose-body">
-      <textarea name="content" placeholder="Write a reply" rows="3" required></textarea>
+      <textarea name="content" placeholder="Balas utas ini..." required></textarea>
       <div class="reply-compose-actions">
-        <button type="submit" class="btn btn-solid">Reply</button>
+        <button type="submit" class="btn btn-solid">Kirim</button>
       </div>
     </div>
   </form>
@@ -48,22 +51,19 @@
 
   <div class="reply-list">
     <% if (thread.replies.length === 0) { %>
-      <div class="empty-state surface-soft small-empty">
-        <p>Belum ada balasan.</p>
-      </div>
+      <div class="small-empty"><p style="color:var(--muted);font-size:0.82rem;padding:16px">Belum ada balasan.</p></div>
     <% } %>
-
     <% thread.replies.slice().reverse().forEach(r => { %>
-      <div class="reply-card surface-soft">
-        <img src="<%= r.author && r.author.avatar ? r.author.avatar : '/img/default-avatar.png' %>" class="avatar avatar-sm" alt="avatar">
-        <div class="reply-content">
-          <div class="reply-topbar">
-            <strong><%= r.author ? (r.author.displayName || r.author.username) : 'User' %></strong>
-            <span>@<%= r.author ? r.author.username : 'user' %></span>
-          </div>
-          <p><%= r.content %></p>
+    <div class="reply-card">
+      <img src="<%= r.author && r.author.avatar ? r.author.avatar : '/img/default-avatar.png' %>" class="avatar avatar-sm" alt="">
+      <div class="reply-content">
+        <div class="reply-topbar">
+          <strong><%= r.author ? (r.author.displayName || r.author.username) : 'User' %></strong>
+          <span>@<%= r.author ? r.author.username : 'user' %></span>
         </div>
+        <p><%= r.content %></p>
       </div>
+    </div>
     <% }) %>
   </div>
 </section>
