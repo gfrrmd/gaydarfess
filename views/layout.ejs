@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GaydarFess</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <nav class="navbar">
+    <div class="nav-inner">
+      <a href="/" class="nav-logo">GaydarFess</a>
+      <div class="nav-actions">
+        <% if (currentUser) { %>
+          <a href="/profile/<%= currentUser.username %>" class="nav-avatar">
+            <img src="<%= currentUser.avatar || '/img/default-avatar.png' %>" alt="avatar">
+          </a>
+          <a href="/auth/logout" class="btn-ghost">Keluar</a>
+        <% } else { %>
+          <a href="/auth/login" class="btn-ghost">Masuk</a>
+          <a href="/auth/register" class="btn-primary">Daftar</a>
+        <% } %>
+      </div>
+    </div>
+  </nav>
+  <main class="container">
+    <%- body %>
+  </main>
+  <script src="/js/main.js"></script>
+</body>
+</html>

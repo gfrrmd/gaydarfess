@@ -1,0 +1,64 @@
+<%- include('partials/header') %>
+
+<div class="feed-wrapper">
+  <% if (currentUser) { %>
+  <div class="new-thread-box">
+    <img src="<%= currentUser.avatar || '/img/default-avatar.png' %>" class="avatar-sm" alt="avatar">
+    <form action="/threads" method="POST" enctype="multipart/form-data" class="thread-form">
+      <textarea name="content" placeholder="What's new?" maxlength="500" rows="2"></textarea>
+      <div class="thread-form-actions">
+        <label class="attach-btn" title="Lampirkan gambar">
+          📷
+          <input type="file" name="media" accept="image/*,image/gif" hidden>
+        </label>
+        <button type="submit" class="btn-primary">Post</button>
+      </div>
+    </form>
+  </div>
+  <% } %>
+
+  <div class="threads-feed">
+    <% threads.forEach(t => { %>
+    <div class="thread-card" id="thread-<%= t._id %>">
+      <a href="/profile/<%= t.author.username %>">
+        <img src="<%= t.author.avatar || '/img/default-avatar.png' %>" class="avatar-sm" alt="avatar">
+      </a>
+      <div class="thread-body">
+        <div class="thread-header">
+          <a href="/profile/<%= t.author.username %>" class="thread-author">
+            <%= t.author.displayName || t.author.username %>
+          </a>
+          <span class="thread-username">@<%= t.author.username %></span>
+          <span class="thread-time"><%= new Date(t.createdAt).toLocaleDateString('id-ID', { day:'2-digit', month:'short' }) %></span>
+        </div>
+        <p class="thread-content"><%= t.content %></p>
+        <% if (t.media) { %>
+          <img src="<%= t.media %>" class="thread-media" alt="media">
+        <% } %>
+        <div class="thread-actions">
+          <button class="action-btn like-btn" data-id="<%= t._id %>" data-liked="<%= currentUser && t.likes.includes(currentUser.id) ? 'true' : 'false' %>">
+            <span class="like-icon"><%= currentUser && t.likes.map(String).includes(String(currentUser.id)) ? '❤️' : '🤍' %></span>
+            <span class="like-count"><%= t.likes.length %></span>
+          </button>
+          <button class="action-btn" onclick="toggleReply('<%= t._id %>')">💬 <span><%= t.replies.length %></span></button>
+        </div>
+        <div class="reply-box" id="reply-<%= t._id %>" style="display:none">
+          <% if (currentUser) { %>
+          <form action="/threads/<%= t._id %>/reply" method="POST" class="reply-form">
+            <input type="text" name="content" placeholder="Balas..." required>
+            <button type="submit" class="btn-primary">Kirim</button>
+          </form>
+          <% } %>
+          <% t.replies.slice().reverse().forEach(r => { %>
+          <div class="reply-item">
+            <strong>@<%= r.author ? r.author.username : 'user' %></strong>: <%= r.content %>
+          </div>
+          <% }) %>
+        </div>
+      </div>
+    </div>
+    <% }) %>
+  </div>
+</div>
+
+<%- include('partials/footer') %>

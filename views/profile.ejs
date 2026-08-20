@@ -1,0 +1,68 @@
+<%- include('partials/header') %>
+
+<div class="profile-wrapper">
+  <div class="profile-header">
+    <div class="profile-info">
+      <div>
+        <h2 class="profile-display"><%= profileUser.displayName || profileUser.username %></h2>
+        <p class="profile-username">@<%= profileUser.username %></p>
+        <p class="profile-bio"><%= profileUser.bio %></p>
+        <p class="profile-followers"><%= profileUser.followers.length %> followers</p>
+      </div>
+      <img src="<%= profileUser.avatar || '/img/default-avatar.png' %>" class="avatar-lg" alt="avatar">
+    </div>
+    <% if (currentUser && currentUser.username === profileUser.username) { %>
+    <div class="profile-btns">
+      <button onclick="document.getElementById('edit-modal').style.display='flex'" class="btn-outline">Edit profile</button>
+      <button class="btn-outline">Share profile</button>
+    </div>
+    <% } %>
+  </div>
+
+  <div class="profile-tabs">
+    <span class="tab active">Threads</span>
+    <span class="tab">Replies</span>
+    <span class="tab">Media</span>
+    <span class="tab">Reposts</span>
+  </div>
+
+  <div class="threads-feed">
+    <% threads.forEach(t => { %>
+    <div class="thread-card">
+      <img src="<%= profileUser.avatar || '/img/default-avatar.png' %>" class="avatar-sm" alt="avatar">
+      <div class="thread-body">
+        <div class="thread-header">
+          <span class="thread-author"><%= profileUser.displayName || profileUser.username %></span>
+          <span class="thread-time"><%= new Date(t.createdAt).toLocaleDateString('id-ID', { day:'2-digit', month:'short', year:'2-digit'}) %></span>
+        </div>
+        <p class="thread-content"><%= t.content %></p>
+        <% if (t.media) { %><img src="<%= t.media %>" class="thread-media" alt=""><% } %>
+      </div>
+    </div>
+    <% }) %>
+  </div>
+</div>
+
+<!-- Edit Modal -->
+<div id="edit-modal" class="modal-overlay" style="display:none">
+  <div class="modal">
+    <h3>Edit Profile</h3>
+    <form action="/profile/edit" method="POST" enctype="multipart/form-data">
+      <label>Display Name
+        <input type="text" name="displayName" value="<%= profileUser.displayName %>">
+      </label>
+      <label>Bio
+        <textarea name="bio"><%= profileUser.bio %></textarea>
+      </label>
+      <label>Avatar
+        <input type="file" name="avatar" accept="image/*">
+      </label>
+      <div class="modal-actions">
+        <button type="button" onclick="document.getElementById('edit-modal').style.display='none'" class="btn-ghost">Batal</button>
+        <button type="submit" class="btn-primary">Simpan</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<%- include('partials/footer') %>

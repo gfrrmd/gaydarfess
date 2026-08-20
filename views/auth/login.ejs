@@ -1,0 +1,14 @@
+<%- include('../partials/header') %>
+
+<div class="auth-wrapper">
+  <h2>Masuk ke GaydarFess</h2>
+  <% if (error) { %><p class="error-msg"><%= error %></p><% } %>
+  <form action="/auth/login" method="POST" class="auth-form">
+    <input type="text" name="username" placeholder="Username" required>
+    <input type="password" name="password" placeholder="Password" required>
+    <button type="submit" class="btn-primary full">Masuk</button>
+  </form>
+  <p class="auth-switch">Belum punya akun? <a href="/auth/register">Daftar</a></p>
+</div>
+
+<%- include('../partials/footer') %>

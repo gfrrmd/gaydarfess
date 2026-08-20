@@ -1,0 +1,102 @@
+/* ===== RESET & BASE ===== */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: #101010; color: #f3f3f3; font-family: 'Inter', sans-serif; min-height: 100vh; }
+a { color: inherit; text-decoration: none; }
+img { max-width: 100%; display: block; }
+textarea, input { outline: none; }
+
+/* ===== NAVBAR ===== */
+.navbar { position: sticky; top: 0; z-index: 100; background: #101010; border-bottom: 1px solid #222; }
+.nav-inner { max-width: 680px; margin: auto; padding: 12px 16px; display: flex; align-items: center; justify-content: space-between; }
+.nav-logo { font-size: 1.2rem; font-weight: 700; letter-spacing: -0.5px; }
+.nav-avatar img { width: 30px; height: 30px; border-radius: 50%; object-fit: cover; }
+.nav-actions { display: flex; align-items: center; gap: 10px; }
+
+/* ===== CONTAINER ===== */
+.container { max-width: 680px; margin: 0 auto; padding: 16px; }
+
+/* ===== BUTTONS ===== */
+.btn-primary { background: #fff; color: #000; border: none; border-radius: 12px; padding: 8px 20px; font-weight: 600; cursor: pointer; font-size: 0.9rem; transition: opacity .2s; }
+.btn-primary:hover { opacity: 0.85; }
+.btn-primary.full { width: 100%; padding: 12px; font-size: 1rem; }
+.btn-ghost { background: transparent; color: #f3f3f3; border: 1px solid #333; border-radius: 12px; padding: 8px 16px; cursor: pointer; font-size: 0.9rem; }
+.btn-ghost:hover { background: #1a1a1a; }
+.btn-outline { background: transparent; color: #f3f3f3; border: 1px solid #444; border-radius: 12px; padding: 8px 20px; cursor: pointer; font-weight: 500; width: 100%; }
+.btn-outline:hover { background: #1a1a1a; }
+
+/* ===== FEED ===== */
+.feed-wrapper { display: flex; flex-direction: column; gap: 0; }
+
+/* NEW THREAD BOX */
+.new-thread-box { display: flex; gap: 12px; padding: 16px 0; border-bottom: 1px solid #222; align-items: flex-start; }
+.thread-form { flex: 1; display: flex; flex-direction: column; gap: 10px; }
+.thread-form textarea { background: transparent; border: none; color: #f3f3f3; font-size: 0.95rem; resize: none; width: 100%; font-family: inherit; placeholder-color: #666; }
+.thread-form textarea::placeholder { color: #555; }
+.thread-form-actions { display: flex; align-items: center; justify-content: space-between; }
+.attach-btn { cursor: pointer; font-size: 1.2rem; opacity: 0.6; transition: opacity .2s; }
+.attach-btn:hover { opacity: 1; }
+
+/* THREAD CARD */
+.thread-card { display: flex; gap: 12px; padding: 16px 0; border-bottom: 1px solid #1e1e1e; }
+.thread-body { flex: 1; min-width: 0; }
+.thread-header { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; margin-bottom: 4px; }
+.thread-author { font-weight: 600; font-size: 0.95rem; }
+.thread-username { color: #666; font-size: 0.85rem; }
+.thread-time { color: #555; font-size: 0.8rem; margin-left: auto; }
+.thread-content { font-size: 0.95rem; line-height: 1.5; color: #e8e8e8; word-break: break-word; margin-bottom: 8px; }
+.thread-media { border-radius: 12px; max-height: 400px; object-fit: cover; margin-top: 8px; width: 100%; }
+
+/* THREAD ACTIONS */
+.thread-actions { display: flex; gap: 16px; margin-top: 10px; }
+.action-btn { background: none; border: none; color: #888; cursor: pointer; font-size: 0.85rem; display: flex; align-items: center; gap: 4px; padding: 4px 0; transition: color .2s; }
+.action-btn:hover { color: #f3f3f3; }
+.like-btn[data-liked="true"] .like-icon { filter: none; }
+
+/* REPLY BOX */
+.reply-box { margin-top: 10px; background: #161616; border-radius: 12px; padding: 10px; }
+.reply-form { display: flex; gap: 8px; margin-bottom: 8px; }
+.reply-form input { flex: 1; background: #1e1e1e; border: 1px solid #333; border-radius: 8px; padding: 8px 12px; color: #f3f3f3; font-size: 0.85rem; }
+.reply-item { font-size: 0.85rem; color: #aaa; padding: 4px 0; border-top: 1px solid #222; }
+
+/* ===== AVATARS ===== */
+.avatar-sm { width: 36px; height: 36px; border-radius: 50%; object-fit: cover; flex-shrink: 0; }
+.avatar-lg { width: 64px; height: 64px; border-radius: 50%; object-fit: cover; flex-shrink: 0; }
+
+/* ===== PROFILE ===== */
+.profile-wrapper { max-width: 680px; }
+.profile-header { padding: 20px 0 16px; border-bottom: 1px solid #222; }
+.profile-info { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px; }
+.profile-display { font-size: 1.4rem; font-weight: 700; }
+.profile-username { color: #888; font-size: 0.9rem; margin-top: 2px; }
+.profile-bio { color: #ccc; font-size: 0.9rem; margin-top: 6px; }
+.profile-followers { color: #666; font-size: 0.85rem; margin-top: 6px; }
+.profile-btns { display: flex; gap: 10px; }
+
+/* PROFILE TABS */
+.profile-tabs { display: flex; border-bottom: 1px solid #222; margin-bottom: 4px; }
+.tab { flex: 1; text-align: center; padding: 12px; color: #666; cursor: pointer; font-size: 0.9rem; font-weight: 500; border-bottom: 2px solid transparent; transition: all .2s; }
+.tab.active { color: #f3f3f3; border-bottom-color: #f3f3f3; }
+
+/* ===== AUTH ===== */
+.auth-wrapper { max-width: 400px; margin: 60px auto; }
+.auth-wrapper h2 { font-size: 1.4rem; margin-bottom: 24px; text-align: center; }
+.auth-form { display: flex; flex-direction: column; gap: 12px; }
+.auth-form input { background: #1a1a1a; border: 1px solid #333; border-radius: 12px; padding: 12px 16px; color: #f3f3f3; font-size: 0.95rem; font-family: inherit; }
+.auth-form input:focus { border-color: #555; }
+.auth-switch { text-align: center; margin-top: 16px; color: #666; font-size: 0.9rem; }
+.auth-switch a { color: #f3f3f3; font-weight: 500; }
+.error-msg { background: #2a1010; color: #ff6b6b; padding: 10px 14px; border-radius: 8px; font-size: 0.85rem; margin-bottom: 12px; }
+
+/* ===== MODAL ===== */
+.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.7); display: flex; align-items: center; justify-content: center; z-index: 200; }
+.modal { background: #181818; border-radius: 16px; padding: 24px; width: 90%; max-width: 420px; }
+.modal h3 { margin-bottom: 16px; font-size: 1.1rem; }
+.modal label { display: flex; flex-direction: column; gap: 6px; font-size: 0.85rem; color: #aaa; margin-bottom: 12px; }
+.modal input, .modal textarea { background: #1e1e1e; border: 1px solid #333; border-radius: 10px; padding: 10px 12px; color: #f3f3f3; font-family: inherit; font-size: 0.9rem; width: 100%; }
+.modal-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 8px; }
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 480px) {
+  .container { padding: 12px; }
+  .profile-display { font-size: 1.2rem; }
+}
